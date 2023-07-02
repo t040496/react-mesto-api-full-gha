@@ -1,0 +1,21 @@
+.profile__button-edit {
+    background-image: url(../../../images/Vector.svg);
+    background-size: 10px;
+    background-color: #000;
+    background-position: center;
+    border: 1px solid #FFF;
+    cursor: pointer;
+    min-width: 24px;
+    min-height: 24px;
+    background-repeat: no-repeat;
+    
+}
+
+
+@media screen and (max-width: 767px) {
+    .profile__button-edit {
+        min-width: 18px;
+        min-height: 18px;
+        background-size: 7.5px;
+    }
+}

@@ -1,0 +1,13 @@
+.popup__status-wrapper {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 36px;
+}
+
+@media screen and (max-width: 767px) {
+    .popup__status-wrapper {
+        padding: 50px 18px;
+    }
+}

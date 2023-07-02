@@ -1,0 +1,6 @@
+.elements__like-comtainer{
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 22px;
+}
