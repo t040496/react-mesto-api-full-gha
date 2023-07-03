@@ -11,10 +11,10 @@ const validationErrors = require('celebrate').errors;
 const rootRouter = require('./routes/index');
 
 // IMPORT MIDDLEWARES
-// const limiter = require('./middlewares/limiter');
+const limiter = require('./middlewares/limiter');
 const errors = require('./middlewares/errors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-// const cors = require('./middlewares/cors');
+const cors = require('./middlewares/cors');
 
 // CONFIG VARIABLES
 const { PORT, DATABASE } = process.env;
@@ -31,8 +31,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // DEFENSE MIDDLEWARES
-// app.use(limiter);
-// app.use(cors);
+app.use(limiter);
+app.use(cors());
 
 // REQUEST LOGGER
 app.use(requestLogger);
