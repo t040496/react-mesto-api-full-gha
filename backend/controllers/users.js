@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const ConflictError = require('../errors/conflict-error');
 const userModel = require('../models/user');
 
 const { CREATE_CODE, SECRET_KEY } = require('../utils/constants');
@@ -17,7 +17,7 @@ const getUsers = (req, res, next) => {
 const findUserById = (req, res, requiredData, next) => {
   userModel
     .findById(requiredData)
-    .orFail()
+    .orFail(() => new NotFoundError('Пользователь с указанным id не существует')) ;
     .then((user) => res.send(user))
     .catch(next);
 };
@@ -50,7 +50,17 @@ const createUser = (req, res, next) => {
       delete data.password;
       res.status(CREATE_CODE).send(data);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError'){
+        next(new BadRequestError('Некорректные данные при создании карточки'));
+      } else {
+        next(err);
+      }
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
+        return;
+      }
+    });
 };
 
 const loginUser = (req, res, next) => {
@@ -80,7 +90,13 @@ const updateUser = (req, res, next) => {
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError'){
+        next(new BadRequestError('Некорректные данные при создании карточки'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {
