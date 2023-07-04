@@ -19,7 +19,7 @@ const getUsers = (req, res, next) => {
 const findUserById = (req, res, requiredData, next) => {
   userModel
     .findById(requiredData)
-    .orFail(() => new NotFoundError('Пользователь с указанным id не существует')) ;
+    .orFail(() => new NotFoundError('Пользователь с указанным id не существует'));
     .then((user) => res.send(user))
     .catch(next);
 };
