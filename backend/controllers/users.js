@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ConflictError = require('../errors/conflict-error');
+const IncorrectDataError = require('../errors/incorrectDataError');
 const userModel = require('../models/user');
+const NotFoundError = require('../errors/notFoundError');
 
 const { CREATE_CODE, SECRET_KEY } = require('../utils/constants');
 
@@ -52,13 +54,11 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError'){
-        next(new BadRequestError('Некорректные данные при создании карточки'));
+        next(new IncorrectDataError('Некорректные данные для создания пользователя'));
+      } else  if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
       } else {
         next(err);
-      }
-      if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
-        return;
       }
     });
 };
