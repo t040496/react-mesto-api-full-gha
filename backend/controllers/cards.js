@@ -1,5 +1,4 @@
 const cardModel = require('../models/card');
-
 const ForbiddenError = require('../errors/forbiddenError');
 const NotFoundError = require('../errors/notFoundError');
 const IncorrectDataError = require('../errors/incorrectDataError');
@@ -32,11 +31,11 @@ const createCard = (req, res, next) => {
 
 const deleteCardById = (req, res, next) => {
   cardModel
-    .findById(req.params.cardId)
-    .orFail(() => new NotFoundError('Карточки с указанным id не существует')) ;
+    Card.findById(req.params.cardId)
+    .orFail(() => new NotFoundError('Карточки с указанным id не существует'))
     .then((card) => {
       cardModel
-        .deleteOne({ _id: card._id, owner: req.user._id })
+        Card.deleteOne({ _id: card._id, owner: req.user._id })
         .then((result) => {
           if (result.deletedCount === 0) {
             throw new ForbiddenError(
