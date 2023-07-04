@@ -57,7 +57,7 @@ const likeCard = (req, res, next) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     )
-    .orFail(() => new NotFoundError('Карточки с указанным id не существует')) ;
+    .orFail(() => new NotFoundError('Передан несуществующий _id карточки'))
     .then((card) => card.populate(['owner', 'likes']))
     .then((cards) => {
       res.send(cards);
