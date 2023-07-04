@@ -12,5 +12,5 @@
 IP-адрес 51.250.14.231
 
 [Frontend](https://imesto.students.nomoreparties.sbs/)
-[Backend](https://imesto.students.nomoreparties.sbs/)
+[Backend](https://api.imesto.students.nomoreparties.sbs/)
 [Ссылка на репозиторий](https://github.com/t040496/react-mesto-api-full-gha)

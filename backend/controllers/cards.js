@@ -1,7 +1,8 @@
 const cardModel = require('../models/card');
 
 const ForbiddenError = require('../errors/forbiddenError');
-
+const NotFoundError = require('../errors/notFoundError');
+const IncorrectDataError = require('../errors/incorrectDataError');
 const getCards = (req, res, next) => {
   cardModel
     .find({})
@@ -19,13 +20,20 @@ const createCard = (req, res, next) => {
     .then((user) => {
       res.status(201).send(user);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next (new IncorrectDataError('Некорректные данные при создании карточки'));
+      } else {
+        next(err);
+      }
+    }
+    );
 };
 
 const deleteCardById = (req, res, next) => {
   cardModel
     .findById(req.params.cardId)
-    .orFail()
+    .orFail(() => new NotFoundError('Карточки с указанным id не существует')) ;
     .then((card) => {
       cardModel
         .deleteOne({ _id: card._id, owner: req.user._id })
@@ -50,7 +58,7 @@ const likeCard = (req, res, next) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     )
-    .orFail()
+    .orFail(() => new NotFoundError('Карточки с указанным id не существует')) ;
     .then((card) => card.populate(['owner', 'likes']))
     .then((cards) => {
       res.send(cards);
@@ -65,7 +73,7 @@ const dislikeCard = (req, res, next) => {
       { $pull: { likes: req.user._id } },
       { new: true },
     )
-    .orFail()
+    .orFail(() => new NotFoundError('Карточки с указанным id не существует')) ;
     .then((card) => card.populate(['owner', 'likes']))
     .then((cards) => {
       res.send(cards);
