@@ -15,14 +15,27 @@ const getUsers = (req, res, next) => {
     })
     .catch(next);
 };
-
 const findUserById = (req, res, requiredData, next) => {
-  userModel
-    .findById(requiredData)
-    .orFail(() => new NotFoundError('Пользователь с указанным id не существует'));
+  User.findById(requiredData)
+    .orFail()
     .then((user) => res.send(user))
-    .catch(next);
+    .catch((err) => {
+      if (err instanceof DocumentNotFoundError) {
+        next(new NotFoundError(`В базе данных не найден пользователь с ID: ${requiredData}.`));
+      } else if (err instanceof CastError) {
+        next(new IncorrectDataError(`Передан некорректный ID пользователя: ${requiredData}.`));
+      } else {
+        next(err);
+      }
+    });
 };
+// const findUserById = (req, res, requiredData, next) => {
+//   userModel
+//     .findById(requiredData)
+//     .orFail(() => new NotFoundError('Пользователь с указанным id не существует'))
+//     .then((user) => res.send(user))
+//     .catch(next);
+// };
 
 const getUserById = (req, res, next) => {
   const requiredData = req.params.userId;
