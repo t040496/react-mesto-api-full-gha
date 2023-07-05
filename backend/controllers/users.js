@@ -1,9 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const ConflictError = require('../errors/conflict-error');
-const IncorrectDataError = require('../errors/incorrectDataError');
+
 const userModel = require('../models/user');
-const NotFoundError = require('../errors/notFoundError');
 
 const { CREATE_CODE, SECRET_KEY } = require('../utils/constants');
 
@@ -15,27 +13,14 @@ const getUsers = (req, res, next) => {
     })
     .catch(next);
 };
+
 const findUserById = (req, res, requiredData, next) => {
-  User.findById(requiredData)
+  userModel
+    .findById(requiredData)
     .orFail()
     .then((user) => res.send(user))
-    .catch((err) => {
-      if (err instanceof DocumentNotFoundError) {
-        next(new NotFoundError(`В базе данных не найден пользователь с ID: ${requiredData}.`));
-      } else if (err instanceof CastError) {
-        next(new IncorrectDataError(`Передан некорректный ID пользователя: ${requiredData}.`));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
-// const findUserById = (req, res, requiredData, next) => {
-//   userModel
-//     .findById(requiredData)
-//     .orFail(() => new NotFoundError('Пользователь с указанным id не существует'))
-//     .then((user) => res.send(user))
-//     .catch(next);
-// };
 
 const getUserById = (req, res, next) => {
   const requiredData = req.params.userId;
@@ -65,15 +50,7 @@ const createUser = (req, res, next) => {
       delete data.password;
       res.status(CREATE_CODE).send(data);
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError'){
-        next(new IncorrectDataError('Некорректные данные для создания пользователя'));
-      } else  if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const loginUser = (req, res, next) => {
@@ -103,13 +80,7 @@ const updateUser = (req, res, next) => {
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError'){
-        next(new BadRequestError('Некорректные данные при создании карточки'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {

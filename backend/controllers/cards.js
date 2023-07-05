@@ -1,7 +1,7 @@
 const cardModel = require('../models/card');
+
 const ForbiddenError = require('../errors/forbiddenError');
-const NotFoundError = require('../errors/notFoundError');
-const IncorrectDataError = require('../errors/incorrectDataError');
+
 const getCards = (req, res, next) => {
   cardModel
     .find({})
@@ -19,23 +19,16 @@ const createCard = (req, res, next) => {
     .then((user) => {
       res.status(201).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next (new IncorrectDataError('Некорректные данные при создании карточки'));
-      } else {
-        next(err);
-      }
-    }
-    );
+    .catch(next);
 };
 
 const deleteCardById = (req, res, next) => {
   cardModel
-    Card.findById(req.params.cardId)
-    .orFail(() => new NotFoundError('Карточки с указанным id не существует'))
+    .findById(req.params.cardId)
+    .orFail()
     .then((card) => {
       cardModel
-        Card.deleteOne({ _id: card._id, owner: req.user._id })
+        .deleteOne({ _id: card._id, owner: req.user._id })
         .then((result) => {
           if (result.deletedCount === 0) {
             throw new ForbiddenError(
@@ -57,7 +50,7 @@ const likeCard = (req, res, next) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     )
-    .orFail(() => new NotFoundError('Передан несуществующий _id карточки'))
+    .orFail()
     .then((card) => card.populate(['owner', 'likes']))
     .then((cards) => {
       res.send(cards);
@@ -72,7 +65,7 @@ const dislikeCard = (req, res, next) => {
       { $pull: { likes: req.user._id } },
       { new: true },
     )
-    .orFail(() => new NotFoundError('Карточки с указанным id не существует'))
+    .orFail()
     .then((card) => card.populate(['owner', 'likes']))
     .then((cards) => {
       res.send(cards);
