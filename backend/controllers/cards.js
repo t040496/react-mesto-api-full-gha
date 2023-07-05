@@ -1,4 +1,4 @@
-// IMPORT ERRORS
+
 const {
   ValidationError,
   DocumentNotFoundError,
@@ -7,21 +7,15 @@ const {
 const ForbiddenError = require('../errors/forbiddenError');
 const NotFoundError = require('../errors/notFoundError');
 const IncorrectDataError = require('../errors/incorrectDataError');
-
-// IMPORT MODELS
 const Card = require('../models/card');
-
-// IMPORT VARIABLES
 const { CREATE_CODE } = require('../utils/constants');
 
-// GET ALL CARDS
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
     .catch(next);
 };
 
-// CREATE CARD
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
@@ -35,7 +29,6 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-// DELETE CARD
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail()
@@ -60,7 +53,6 @@ module.exports.deleteCard = (req, res, next) => {
     });
 };
 
-// CARD LIKES UPDATE COMMON METHOD
 const cardLikesUpdate = (req, res, updateData, next) => {
   Card.findByIdAndUpdate(req.params.cardId, updateData, { new: true })
     .orFail()
@@ -76,13 +68,11 @@ const cardLikesUpdate = (req, res, updateData, next) => {
     });
 };
 
-// LIKE CARD
 module.exports.likeCard = (req, res, next) => {
   const updateData = { $addToSet: { likes: req.user._id } };
   cardLikesUpdate(req, res, updateData, next);
 };
 
-// DISLIKE CARD
 module.exports.dislikeCard = (req, res, next) => {
   const updateData = { $pull: { likes: req.user._id } };
   cardLikesUpdate(req, res, updateData, next);
