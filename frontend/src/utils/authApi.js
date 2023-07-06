@@ -1,5 +1,5 @@
 // VARIABLES
-const BASE_AUTH_URL = "https://auth.nomoreparties.co";
+const BASE_AUTH_URL = "https://api.imesto.students.nomoreparties.sbs";
 
 // MAKE REQUEST TO THE SERVER
 function makeRequest(url, method, body, token) {
