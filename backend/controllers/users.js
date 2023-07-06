@@ -1,8 +1,6 @@
-// IMPORT PACKAGES
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// IMPORT ERRORS
 const {
   ValidationError,
   DocumentNotFoundError,
@@ -11,25 +9,17 @@ const {
 const NotFoundError = require('../errors/notFoundError');
 const IncorrectDataError = require('../errors/incorrectDataError');
 const ConflictError = require('../errors/conflictError');
-
-// IMPORT MODELS
 const User = require('../models/user');
-
-// CONFIG VARIABLES
 const { NODE_ENV, SECRET_KEY } = process.env;
 const { MODE_PRODUCTION, DEV_KEY } = require('../utils/config');
-
-// IMPORT VARIABLES
 const { CREATE_CODE } = require('../utils/constants');
 
-// GET ALL USERS
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
     .catch(next);
 };
 
-// FIND USER BY ID COMMON METHOD
 const findUserById = (req, res, requiredData, next) => {
   User.findById(requiredData)
     .orFail()
@@ -45,17 +35,14 @@ const findUserById = (req, res, requiredData, next) => {
     });
 };
 
-// GET USER
 module.exports.getUser = (req, res, next) => {
   findUserById(req, res, req.params.userId, next);
 };
 
-// GET USER INFO
 module.exports.getUserInfo = (req, res, next) => {
   findUserById(req, res, req.user._id, next);
 };
 
-// CREATE USER
 module.exports.createUser = (req, res, next) => {
   const {
     name,
@@ -88,7 +75,6 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-// USER UPDATE COMMON METHOD
 const userUpdate = (req, res, updateData, next) => {
   User.findByIdAndUpdate(req.user._id, updateData, { new: true, runValidators: true })
     .orFail()
@@ -106,19 +92,16 @@ const userUpdate = (req, res, updateData, next) => {
     });
 };
 
-// UPDATE USER INFO
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   userUpdate(req, res, { name, about }, next);
 };
 
-// UPDATE USER AVATAR
 module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   userUpdate(req, res, { avatar }, next);
 };
 
-// LOGIN
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -133,12 +116,11 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         sameSite: true,
       });
-      res.send({ message: 'Успешный вход' });
+      res.send({ message: 'Успешный вход', token });
     })
     .catch(next);
 };
 
-// LOGOUT
 module.exports.logout = (req, res) => {
   res.cookie('jwt', 'none', {
     maxAge: 5000,
