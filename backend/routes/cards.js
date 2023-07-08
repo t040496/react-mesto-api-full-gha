@@ -1,50 +1,50 @@
+// IMPORT PACKAGES
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-const cardController = require('../controllers/cards');
+// IMPORT CONTROLLERS
+const {
+  getAllCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
+} = require('../controllers/cards');
+
+// IMPORT VARIABLES
 const { LINK_REGEXP } = require('../utils/constants');
 
-router.get('', cardController.getCards);
+// GET ALL CARDS ROUTE
+router.get('/', getAllCards);
 
-router.delete(
-  '/:cardId',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().required().hex().length(24),
-    }),
+// CREATE CARD ROUTE
+router.post('/', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().regex(LINK_REGEXP),
   }),
-  cardController.deleteCardById,
-);
+}), createCard);
 
-router.post(
-  '',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required().regex(LINK_REGEXP),
-    }),
+// DELETE CARD ROUTE
+router.delete('/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().hex().length(24),
   }),
-  cardController.createCard,
-);
+}), deleteCard);
 
-router.put(
-  '/:cardId/likes',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().required().hex().length(24),
-    }),
+// LIKE CARD ROUTE
+router.put('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().hex().length(24),
   }),
-  cardController.likeCard,
-);
+}), likeCard);
 
-router.delete(
-  '/:cardId/likes',
-  celebrate({
-    params: Joi.object().keys({
-      cardId: Joi.string().required().hex().length(24),
-    }),
+// DISLIKE CARD ROUTE
+router.delete('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().hex().length(24),
   }),
-  cardController.dislikeCard,
-);
+}), dislikeCard);
 
+// MODULE EXPORT
 module.exports = router;
