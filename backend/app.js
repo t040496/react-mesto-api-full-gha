@@ -4,7 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
+
 const validationErrors = require('celebrate').errors;
 
 // IMPORT ROUTES
@@ -31,9 +31,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // DEFENSE MIDDLEWARES
-app.use(helmet());
 app.use(limiter);
-app.use(cors);
+app.use(cors());
 
 // REQUEST LOGGER
 app.use(requestLogger);

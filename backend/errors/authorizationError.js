@@ -1,7 +1,5 @@
-// IMPORT VARIABLES
 const { UNAUTHORIZED_ERROR_CODE } = require('../utils/constants');
 
-// AUTHORIZATION ERROR
 class AuthorizationError extends Error {
   constructor(message) {
     super(message);

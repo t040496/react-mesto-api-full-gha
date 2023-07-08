@@ -1,22 +1,17 @@
-// IMPORT PACKAGES
 const rootRouter = require('express').Router();
 
-// IMPORT ROUTES
+const userRouter = require('./users');
+const cardRouter = require('./cards');
 const signin = require('./signin');
 const signup = require('./signup');
-const users = require('./users');
-const cards = require('./cards');
 const notFound = require('./notFound');
 
-// IMPORT MIDDLEWARES
 const auth = require('../middlewares/auth');
 
-// ROUTES METHODS
 rootRouter.use('/signin', signin);
 rootRouter.use('/signup', signup);
-rootRouter.use('/users', auth, users);
-rootRouter.use('/cards', auth, cards);
-rootRouter.use('*', auth, notFound);
+rootRouter.use('/users', auth, userRouter);
+rootRouter.use('/cards', auth, cardRouter);
+rootRouter.use('*', notFound);
 
-// EXPORT ROUTES
 module.exports = rootRouter;
