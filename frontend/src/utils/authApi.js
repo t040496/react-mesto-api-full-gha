@@ -1,6 +1,3 @@
-// VARIABLES
-const BASE_AUTH_URL = "https://auth.nomoreparties.co";
-
 // MAKE REQUEST TO THE SERVER
 function makeRequest(url, method, body, token) {
     const headers = { "Content-Type": "application/json" };
@@ -11,7 +8,7 @@ function makeRequest(url, method, body, token) {
     if (body !== undefined) {
         config.body = JSON.stringify(body);
     }
-    return fetch(`${BASE_AUTH_URL}${url}`, config).then((res) => {
+    return fetch(`${process.env.REACT_APP_BASE_URL}${url}`, config).then((res) => {
         return res.ok
             ? res.json()
             : Promise.reject(`Ошибка: ${res.status} ${res.statusText}`);

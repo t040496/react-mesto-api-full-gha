@@ -10,14 +10,18 @@ const { MODE_PRODUCTION, DEV_KEY } = require('../utils/config');
 
 // AUTHORIZATION MIDDLEWARE
 module.exports = (req, res, next) => {
-  const token = req.cookies.jwt;
+  let token = req.headers.authorization.split(' ');
+  token = token[1] || token[0];
+
   if (!token) {
     return next(new AuthorizationError('Необходима авторизация'));
   }
   let payload;
+  console.log(token);
   try {
     payload = jwt.verify(token, NODE_ENV === MODE_PRODUCTION ? SECRET_KEY : DEV_KEY);
   } catch (err) {
+    console.log('>>>', err);
     return next(new AuthorizationError('Необходима авторизация'));
   }
   req.user = payload;
