@@ -18,6 +18,7 @@ const ALLOWED_CORS = [
   'https://158.160.53.34',
   'http://localhost:3000',
   'http://localhost:3001',
+  'http://localhost:3005',
 ];
 
 // ALLOWED METHODS

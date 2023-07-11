@@ -80,9 +80,9 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: 'https://api.imesto.students.nomoreparties.sbs',
+  baseUrl: process.env.REACT_APP_BASE_URL,
   headers: {
-    authorization: 'e8064865-8470-48c7-9ead-ad84498413da',
+    'Authorization': localStorage.getItem("token"),
     'Content-Type': 'application/json'
   }
 })

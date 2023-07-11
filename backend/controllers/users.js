@@ -128,12 +128,7 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === MODE_PRODUCTION ? SECRET_KEY : DEV_KEY,
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        sameSite: true,
-      });
-      res.send({ message: 'Успешный вход' });
+      res.send({ message: 'Успешный вход', token });
     })
     .catch(next);
 };
