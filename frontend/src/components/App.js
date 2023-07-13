@@ -34,7 +34,12 @@ function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        loggedIn && Promise.all([api.getUserInfo(), api.getInitialCards()])
+        const token = localStorage.getItem("token");
+        const headersDefault = {
+            authorization: token
+        }
+
+        loggedIn && Promise.all([api.getUserInfo(headersDefault), api.getInitialCards(headersDefault)])
             .then(([userData, cardsData]) => {
                 setCurrentUser(userData);
                 setCards(cardsData);

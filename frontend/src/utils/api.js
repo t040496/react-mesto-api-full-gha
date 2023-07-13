@@ -13,9 +13,9 @@ class Api {
     return fetch(url, options).then(this._checkResponse)
   }
 
-  getUserInfo() {
+  getUserInfo(headersDefault = {}) {
     return this._request(`${this._serverUrl}/users/me`, {
-      headers: this._headers
+      headers: { ...this._headers, ...headersDefault }
     })
   }
 
@@ -40,9 +40,9 @@ class Api {
     })
   }
 
-  getInitialCards() {
+  getInitialCards(headersDefault = {}) {
     return this._request(`${this._serverUrl}/cards`, {
-      headers: this._headers
+      headers: { ...this._headers, ...headersDefault }
     })
   }
 

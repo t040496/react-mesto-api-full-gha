@@ -17,11 +17,10 @@ module.exports = (req, res, next) => {
     return next(new AuthorizationError('Необходима авторизация'));
   }
   let payload;
-  console.log(token);
+
   try {
     payload = jwt.verify(token, NODE_ENV === MODE_PRODUCTION ? SECRET_KEY : DEV_KEY);
   } catch (err) {
-    console.log('>>>', err);
     return next(new AuthorizationError('Необходима авторизация'));
   }
   req.user = payload;
