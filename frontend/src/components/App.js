@@ -73,7 +73,9 @@ function App() {
 
 
     function handleCardLike(card) {
-        const isLiked = card.likes.some(i => i._id === currentUser._id);
+        const isLiked = card.likes.some(id => id === currentUser._id);
+
+        console.log('>>>', isLiked, currentUser, card.likes)
 
         const responsePromise = isLiked ? api.deleteCardLike(card._id) : api.setCardLike(card._id);
 
